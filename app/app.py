@@ -48,7 +48,7 @@ async def on_message(message):
             await minority_player.send("Your word is <{}>!".format(minority_word))
             await clueless_player.send("You are the clueless! You do not know the word")
             for player in rest_of_players:
-                player.send("Your word is <{}>!".format(majority_word))
+                await player.send("Your word is <{}>!".format(majority_word))
             await message.channel.send('Word have been SENT to following players!\n{}'.format(game.build_player_table_string()))
         except Exception as e:
             await message.channel.send(e)
@@ -79,9 +79,9 @@ async def on_message(message):
             word_guess = message.content.split(" ", 1)[1]
             guess_status, correct_word = game.guess(guesser_discord_id, word_guess)
             if guess_status == "INCORRECT_GUESS_END":
-                await message.channel.send("INCORRECT guess <{}> by {}! Majority WINS!!!!".format(correct_word, message.author.id))
+                await message.channel.send("INCORRECT guess <{}> by {}! Majority WINS!!!!\nYour guess was {}".format(correct_word, message.author.id, word_guess))
             elif guess_status == "CORRECT_GUESS_END":
-                await message.channel.send("CORRECT guess <{}> by {}! Minority and Clueless WIN!!!".format(correct_word, message.author.id))
+                await message.channel.send("CORRECT guess <{}> by {}! Minority and Clueless WIN!!!\nYour guess was {}".format(correct_word, message.author.id, word_guess))
         except Exception as e:
             await message.channel.send(e)
     
