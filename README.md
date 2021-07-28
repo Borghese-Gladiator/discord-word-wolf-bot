@@ -1,6 +1,15 @@
 # word-wolf-bot
 Discord bot to play Word Wolf with friends on a server
- 
+
+## Commands
+Setup
+- ```pip-compile dev-requirements.in -o requirements.txt```
+- ```pip install -r requirements.txt```
+Test
+- ```python -m unittest```
+- ```coverage run --source ../app -m unittest```
+- ```coverage html``` and open /htmlcov/index.html
+
 ## Dependencies
 - discord.py - library to interface with Discord
 - python-dotenv - loads TOKEN environment variable from .env file
@@ -11,7 +20,7 @@ Discord bot to play Word Wolf with friends on a server
 - utils.py - utilities for app.py
 
 ## Game Flow
-- player types the below commands to play the game
+Player types the below commands to play the game
 - $join joins game
 - $leave leaves game
 - $start starts game with people who joined it

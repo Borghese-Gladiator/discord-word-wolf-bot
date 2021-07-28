@@ -1,0 +1,5 @@
+discord.py>=1.7.3
+coverage>=5.5
+prettytable>=2.1.0
+python-dotenv>=0.18.0
+texttable>=1.6.4
