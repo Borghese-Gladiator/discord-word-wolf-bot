@@ -1,9 +1,14 @@
 # word-wolf-bot
 Discord bot to play Word Wolf with friends on a server
 
-## Setup
+## Commands
+Setup
 - ```pip-compile dev-requirements.in -o requirements.txt```
 - ```pip install -r requirements.txt```
+Test
+- ```python -m unittest```
+- ```coverage run --source ../app -m unittest```
+- ```coverage html``` and open /htmlcov/index.html
 
 ## Dependencies
 - discord.py - library to interface with Discord
