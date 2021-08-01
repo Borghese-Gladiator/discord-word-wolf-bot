@@ -12,6 +12,8 @@ attrs==21.2.0
     # via aiohttp
 chardet==4.0.0
     # via aiohttp
+coverage==5.5
+    # via -r dev-requirements.in
 discord.py==1.7.3
     # via -r dev-requirements.in
 idna==3.2
