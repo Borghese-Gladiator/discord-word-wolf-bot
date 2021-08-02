@@ -1,5 +1,4 @@
 import random
-from prettytable import PrettyTable
 
 class Player:
     def __init__(self, discord_id, discord_object, game_id):
@@ -8,7 +7,6 @@ class Player:
         self.game_id = game_id
         self.num_votes = 0
         self.has_voted = False
-    ## setters
     def vote(self):
         self.has_voted = True
     def increment_num_votes(self):
@@ -45,13 +43,13 @@ class WordWolfGame:
         if self.game_running:
             raise Exception("Game is already in progress")
         if any(player for player in self.player_list if player.discord_id == discord_object.id):
-            raise Exception("Player <{}> already in the game".format(discord_object.id))
+            raise Exception("Player <{}> already in the game".format(discord_object.name))
         self.player_list.append(Player(discord_object.id, discord_object, len(self.player_list)))
     
-    def leave(self, discord_id):
-        if None == any((player.discord_id == discord_id for player in self.player_list), None):
-            raise Exception("Player <{}> has NOT joined the game".format(discord_id))
-        self.player_list = filter(lambda id: id == discord_id, self.player_list)
+    def leave(self, discord_object):
+        if None == any((player.discord_id == discord_object.discord_id for player in self.player_list), None):
+            raise Exception("Player <{}> has NOT joined the game".format(discord_object.name))
+        self.player_list = filter(lambda id: id == discord_object.discord_id, self.player_list)
         
     def start(self):
         '''
@@ -59,7 +57,7 @@ class WordWolfGame:
         @return selected word_pair, tuple of
         '''
         if 2 > len(self.player_list):
-            raise Exception("Not enough players have joined the game. Current player count: {}".format(len(self.player_list)))
+            raise Exception("Need 4 players to join the game. Current player count: {}".format(len(self.player_list)))
         self.game_running = True
         self.majority_word, self.minority_word = random.sample(random.choice(self.WORD_PAIRS), 2) # randomly picks a word pair and shuffles that pair
         list_discord_objects = [player.discord_object for player in self.player_list]
@@ -98,7 +96,6 @@ class WordWolfGame:
         
         ## check if correct player has most votes
         most_voted_player = max(self.player_list, key=lambda player: player.num_votes)
-        print(most_voted_player)
         if most_voted_player.discord_id == self.minority_player_id:
             return ("CORRECT_MINORITY_GUESS", most_voted_player.discord_object)
         elif most_voted_player.discord_id == self.clueless_player_id:
@@ -108,12 +105,17 @@ class WordWolfGame:
             if self.round_number < 2:
                 idx_most_voted_player = self.player_list.index(most_voted_player)
                 del self.player_list[idx_most_voted_player]
+                for player in self.player_list:
+                    player.reset()
                 return ("INCORRECT_CONTINUE", most_voted_player.discord_object)
             else:
                 self.player_list.clear()
                 return ("INCORRECT_END", most_voted_player.discord_object)
     
     def guess(self, guesser_discord_id, word):
+        '''
+        Enable minority/clueless to guess word
+        '''
         if not self.game_running:
             raise Exception("Game is not currently running")
         if guesser_discord_id != self.minority_player_id and guesser_discord_id != self.clueless_player_id:
@@ -131,17 +133,21 @@ class WordWolfGame:
         return ",".join(player_name_list)
 
     def build_player_list_string(self):
-        print(",".join([player.discord_object.name for player in self.player_list]))
+        '''
+        @return comma-separated list of player names
+        '''
         return ",".join([player.discord_object.name for player in self.player_list])
-    
+
     def build_player_table_string(self):
-        t = PrettyTable(['Discord ID', 'Name', '# of Votes'])
+        '''
+        Build table of players with their IDs for voting
+        '''
+        ## column width is longest width + 2 padding
+        id_col_width = max(len(str(player.discord_id)) for player in self.player_list) + 2
+        name_col_width = max(len(player.discord_object.name) for player in self.player_list) + 2
+        num_vote_col_width = max(len(str(player.num_votes)) for player in self.player_list) + 2
+        result_str = ""
+        result_str += "{} {} {}\n".format("Discord ID".ljust(id_col_width), "Name".ljust(name_col_width), "Num Votes".ljust(num_vote_col_width))
         for player in self.player_list:
-            t.add_row([player.discord_id, player.discord_object.name, player.num_votes])
-        return t
-    
-    def get_player_list(self):
-        return self.player_list
-    
-    def get_round_running(self):
-        return self.game_running
+            result_str += "{} {} {}\n".format(str(player.discord_id).ljust(id_col_width), player.discord_object.name.ljust(name_col_width), str(player.num_votes).ljust(num_vote_col_width))
+        return result_str
