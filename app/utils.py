@@ -26,3 +26,15 @@ def generate_dad_joke():
 
 def get_rules():
     return "Who among you is the wolf with a different word?\n1. Every player receives a word\n2. One player has a different word from the rest\n3. Discuss to find the imposter\n4. Vote on the person you belive to be the imposter"
+
+def get_word_pairs():
+    return [
+        ("Eiffel Tower","State of Liberty"),
+        ("Fireworks","Guns"),
+        ("Light","Dark"),
+        ("USA","China"),
+        ("Water Flea","Locust"),
+        ("Schools","Military"),
+        ("Dell","Apple"),
+        ("MIT","Harvard")
+    ]
