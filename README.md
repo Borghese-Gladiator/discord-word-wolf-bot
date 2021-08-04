@@ -18,6 +18,7 @@ Test
 - app.py - interfaces with Discord using bot TOKEN and discord.py
 - game.py - WordWolfGame logic and game state
 - utils.py - utilities for app.py
+- dev-requirements.in - use 
 
 ## Game Flow
 Player types the below commands to play the game
