@@ -1,14 +1,13 @@
 import discord
 import os
 from dotenv import load_dotenv
-from random import choice
-from utils import load_word_pairs, get_rules
+from utils import get_rules, get_word_pairs
 from game import WordWolfGame
 
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 CLIENT = discord.Client()
-game = WordWolfGame(load_word_pairs(r'../word_pairs.txt'))
+game = WordWolfGame(get_word_pairs())
 
 @CLIENT.event
 async def on_ready():
