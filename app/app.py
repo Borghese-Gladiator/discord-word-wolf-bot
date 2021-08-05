@@ -3,7 +3,9 @@ import os
 from dotenv import load_dotenv
 from utils import get_rules, get_word_pairs
 from game import WordWolfGame
+import logging
 
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 CLIENT = discord.Client()
@@ -20,24 +22,32 @@ async def on_message(message):
         return
 
     if message.content.startswith('$rules'):
+        logging.info('print rules to channel')
         await message.channel.send('{}\n\nWORD WOLF RULES\n{}'.format(get_rules()))
     
     if message.content.startswith('$list'):
+        logging.info('print player table to channel')
         table_embed = discord.Embed(title='Players Info', description=game.build_player_table_string())
         await message.channel.send(table_embed)
 
     if message.content.startswith('$join'):
+        logging.info('New player: <{}> joined'.format(message.author))
         try:
             if message.author.id == 246485528348721152:
                 await message.channel.send('THE SPELL MASTER#NA1 is the best Gangplank player NA. Watch his ARAM VOD')
             game.join(message.author)
             await message.channel.send('New player: <{}> joined'.format(message.author))
         except Exception as e:
+            logging.info('Exception e: <{}>'.format(e))
             await message.channel.send(e)
     
     if message.content.startswith('$start'):
+        logging.info('Player <{}> ran start'.format(message.author))
         try:
             majority_word, minority_word, minority_player, clueless_player, rest_of_players = game.start()
+            logging.info('Minority Player <{}> with word <{}>'.format(minority_player, minority_word))
+            logging.info('Clueless Player <{}>'.format(clueless_player))
+            logging.info('Majority Player List <{}> with word <{}>'.format(', '.join(rest_of_players), majority_word))
             await minority_player.send("Your word is <{}>!".format(minority_word))
             await clueless_player.send("You are the clueless! You do not know the word")
             for player in rest_of_players:
@@ -46,13 +56,16 @@ async def on_message(message):
             table_embed = discord.Embed(title='Players Info', description=game.build_player_table_string())
             await message.channel.send(table_embed)
         except Exception as e:
+            logging.info('Exception e: <{}>'.format(e))
             await message.channel.send(e)
 
     if message.content.startswith('$vote'):
+        logging.info('Player <{}> ran $vote with content <{}>'.format(message.author, message.content))
         try:
             voting_discord_id = message.author.id
             voted_discord_id = int(message.content.split(" ", 1)[1])
             game_status, most_voted_player = game.vote(voting_discord_id, voted_discord_id)
+            logging.info('Game Status <{}> with most voted player <{}>'.format(game_status, most_voted_player))
             if game_status == "NEED_MORE_VOTES":
                 await message.channel.send('Waiting on following players: {}'.format(game.build_not_voted_players_string()))
             elif game_status == "CORRECT_MINORITY_GUESS":
@@ -66,9 +79,11 @@ async def on_message(message):
             else:
                 raise Exception("Unexpected status <{}> or player <{}> returned".format(game_status, most_voted_player))
         except Exception as e:
-            print(e)
+            logging.info('Exception e: <{}>'.format(e))
+            await message.channel.send(e)
 
     if message.content.startswith("$guess"):
+        logging.info('Player <{}> ran $guess with content <{}>'.format(message.author, message.content))
         try:
             guesser_discord_id = message.author.id
             word_guess = message.content.split(" ", 1)[1]
@@ -78,20 +93,16 @@ async def on_message(message):
             elif guess_status == "CORRECT_GUESS_END":
                 await message.channel.send("CORRECT guess <{}> by {}! Minority and Clueless WIN!!!\nYour guess was {}".format(correct_word, message.author.id, word_guess))
         except Exception as e:
+            logging.info('Exception e: <{}>'.format(e))
             await message.channel.send(e)
     
-    if message.content.startswith("$add_word"):
-        try:
-            word_one, word_two = message.content.split(" ")[1].split(",")
-            print(word_one, word_two)
-        except Exception as e:
-            await message.author.send(e)
-
     if message.content.startswith('$leave'):
+        logging.info('Player <{}> ran $leave'.format(message.author))
         try:
             game.leave(message.author)
             await message.channel.send('{} just left'.format(message.author))
         except Exception as e:
+            logging.info('Exception e: <{}>'.format(e))
             await message.channel.send(e)
 
 CLIENT.run(TOKEN)
