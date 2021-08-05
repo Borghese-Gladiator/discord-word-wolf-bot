@@ -22,16 +22,16 @@ async def on_message(message):
         return
 
     if message.content.startswith('$rules'):
-        logging.info('print rules to channel')
+        logging.info('$rules - print rules to channel')
         await message.channel.send('{}\n\nWORD WOLF RULES\n{}'.format(get_rules()))
     
     if message.content.startswith('$list'):
-        logging.info('print player table to channel')
+        logging.info('$list - print player table to channel')
         table_embed = discord.Embed(title='Players Info', description=game.build_player_table_string())
         await message.channel.send(table_embed)
 
     if message.content.startswith('$join'):
-        logging.info('New player: <{}> joined'.format(message.author))
+        logging.info('$join - new player <{}> joined'.format(message.author))
         try:
             if message.author.id == 246485528348721152:
                 await message.channel.send('THE SPELL MASTER#NA1 is the best Gangplank player NA. Watch his ARAM VOD')
@@ -42,7 +42,7 @@ async def on_message(message):
             await message.channel.send(e)
     
     if message.content.startswith('$start'):
-        logging.info('Player <{}> ran start'.format(message.author))
+        logging.info('$start - player <{}> ran start'.format(message.author))
         try:
             majority_word, minority_word, minority_player, clueless_player, rest_of_players = game.start()
             logging.info('Minority Player <{}> with word <{}>'.format(minority_player, minority_word))
@@ -60,7 +60,7 @@ async def on_message(message):
             await message.channel.send(e)
 
     if message.content.startswith('$vote'):
-        logging.info('Player <{}> ran $vote with content <{}>'.format(message.author, message.content))
+        logging.info('$vote - player <{}> ran $vote with content <{}>'.format(message.author, message.content))
         try:
             voting_discord_id = message.author.id
             voted_discord_id = int(message.content.split(" ", 1)[1])
@@ -83,7 +83,7 @@ async def on_message(message):
             await message.channel.send(e)
 
     if message.content.startswith("$guess"):
-        logging.info('Player <{}> ran $guess with content <{}>'.format(message.author, message.content))
+        logging.info('$guess - player <{}> ran $guess with content <{}>'.format(message.author, message.content))
         try:
             guesser_discord_id = message.author.id
             word_guess = message.content.split(" ", 1)[1]
@@ -97,7 +97,7 @@ async def on_message(message):
             await message.channel.send(e)
     
     if message.content.startswith('$leave'):
-        logging.info('Player <{}> ran $leave'.format(message.author))
+        logging.info('$leave - player <{}> ran $leave'.format(message.author))
         try:
             game.leave(message.author)
             await message.channel.send('{} just left'.format(message.author))
