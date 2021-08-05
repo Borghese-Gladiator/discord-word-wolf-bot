@@ -23,7 +23,8 @@ async def on_message(message):
         await message.channel.send('{}\n\nWORD WOLF RULES\n{}'.format(get_rules()))
     
     if message.content.startswith('$list'):
-        await message.channel.send('Below players are here!\n```{}```'.format(game.build_player_table_string()))
+        table_embed = discord.Embed(title='Players Info', description=game.build_player_table_string())
+        await message.channel.send(table_embed)
 
     if message.content.startswith('$join'):
         try:
@@ -41,7 +42,9 @@ async def on_message(message):
             await clueless_player.send("You are the clueless! You do not know the word")
             for player in rest_of_players:
                 await player.send("Your word is <{}>!".format(majority_word))
-            await message.channel.send('Word have been SENT to following players!\n```{}```'.format(game.build_player_table_string()))
+            await message.channel.send('Word have been SENT!')
+            table_embed = discord.Embed(title='Players Info', description=game.build_player_table_string())
+            await message.channel.send(table_embed)
         except Exception as e:
             await message.channel.send(e)
 
