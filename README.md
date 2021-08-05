@@ -1,5 +1,5 @@
 # word-wolf-bot
-Discord bot to play Word Wolf with friends on a server
+Python Discord bot to play Word Wolf with friends on a server - deployed to Heroku here https://discord-word-wolf-bot.herokuapp.com/
 
 ## Commands
 Setup
@@ -9,6 +9,11 @@ Test
 - ```python -m unittest```
 - ```coverage run --source ../app -m unittest```
 - ```coverage html``` and open /htmlcov/index.html
+Deployment
+- ```heroku login```
+- ```heroku create discord-word-wolf-bot```
+- ```heroku config:set TOKEN=<DISCORD_TOKEN>```
+- ```heroku ps:scale web=1```
 
 ## Dependencies
 - discord.py - library to interface with Discord
